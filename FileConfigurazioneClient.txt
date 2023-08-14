@@ -1,0 +1,16 @@
+#tutte le righe che inziano per # o vuote devono essere ignorate
+
+# Porta TCP server
+TCPPORT=6666
+
+# Indirizzo di multicast
+MULTICAST=239.255.32.32
+
+# Porta di multicast
+MCASTPORT=44444
+
+# Porta del registry RMI
+REGPORT=7777
+
+# porta delle RMI CALLBACK
+CALLPORT=5555

@@ -14,18 +14,18 @@ public class ClientMulticast implements Runnable {
     }
 
     @SuppressWarnings("deprecation")
-	@Override
+    @Override
     public void run() {
         try (// Creazione del socket di multicast
-		MulticastSocket multicastSocket = new MulticastSocket(MCASTPORT)) {
+             MulticastSocket multicastSocket = new MulticastSocket(MCASTPORT)) {
             InetAddress group = InetAddress.getByName(MULTICAST);
 
             // Aggiunta del socket al gruppo di multicast
             multicastSocket.joinGroup(group);
-          
+
             System.out.println("-----------------------------------------------------------------------------------------");
             System.out.println("Ora sei registrato al gruppo di multicast !");
-			System.out.println("Per condividere l'esito delle tue partite digita 'share:nome'");
+            System.out.println("Per condividere l'esito delle tue partite digita 'share'");
 
 
             while (true) {
@@ -35,18 +35,18 @@ public class ClientMulticast implements Runnable {
                 multicastSocket.receive(packet);
                 String notification = new String(packet.getData(), 0, packet.getLength());
 
-                
+
                 //memorizzo le notifiche nella map con il nome dell'utente e il punteggio
                 String[] parts = notification.split(":");
                 if (parts.length == 2) {
                     String nome = parts[1];
                     double valore = Double.parseDouble(parts[0]);
                     datiRicevutiMulticast.put(nome, valore);
-                    
+
                 } else {
                     System.out.println("Notifica ricevuta non valida: " + notification);
                 }
-                
+
             }
         } catch (IOException e) {
             e.printStackTrace();

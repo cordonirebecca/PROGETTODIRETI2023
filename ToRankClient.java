@@ -17,11 +17,15 @@ public class ToRankClient extends RemoteException implements InterfaceToRankClie
     }
 
     @Override
-    public void rankUpdated( List<Map.Entry<String, Double>> list) throws RemoteException {
-    	 this.list.addAll(list);
-         System.out.println("     -------------------- CALLBACK -------------------- " +
-                 "\n      Prime tre posizioni della classifica aggiornate" +
-                 "\n     -------------------------------------------------- ");
-         System.out.println(this.list);
+    public void rankUpdated(List<Map.Entry<String, Double>> list) throws RemoteException {
+        this.list.addAll(list);
+        System.out.println("-----------------------------------------------------------------------------------------");
+        System.out.println("PRIME TRE POSIZIONI VARIATE ! ");
+
+        int position = 1;
+        for (Map.Entry<String, Double> entry : this.list) {
+            System.out.println("("+ position + ") " + entry);
+            position++;
+        }
     }
 }

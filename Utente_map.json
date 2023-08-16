@@ -1,0 +1,28 @@
+{
+  "rei": {
+    "username": "rei",
+    "psw": "7",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "rebi": {
+    "username": "rebi",
+    "psw": "7",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  }
+}

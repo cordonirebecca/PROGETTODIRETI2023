@@ -12,11 +12,14 @@ public class ToNotifyRank extends RemoteObject implements InterfaceToNotifyRank 
 	
 	//oggetti remoti dei client registrati per ricevere le callback sugli aggiornamenti della classifica.
 	 private final ConcurrentHashMap<String, InterfaceToRankClient> listeners;
+
+    public ConcurrentHashMap<String, Double> tabellaClassifica;
 	 
    
-    public ToNotifyRank() throws RemoteException {
+    public ToNotifyRank( ConcurrentHashMap<String, Double> tabellaClassifica) throws RemoteException {
         super();
         listeners = new ConcurrentHashMap<>();
+        this.tabellaClassifica = tabellaClassifica;
     }
 
     
@@ -24,7 +27,7 @@ public class ToNotifyRank extends RemoteObject implements InterfaceToNotifyRank 
     public void registerListener(InterfaceToRankClient listener, String nome) {
         if (!listeners.contains(listener)) {
             listeners.putIfAbsent(nome, listener);
-            System.out.println("iscrizione alle callback effettuata con successo" );
+            System.out.println("Iscrizione alle callback effettuata con successo" );
         }
 
     }
@@ -33,7 +36,7 @@ public class ToNotifyRank extends RemoteObject implements InterfaceToNotifyRank 
     //cancellazione per callback
     public void unregisterListener(InterfaceToRankClient listener, String nome) {
         listeners.remove(nome,listener);
-        System.out.println("cancellazione alle callback effettuata con successo" );
+        System.out.println("Cancellazione alle callback effettuata con successo" );
     }
 
     
@@ -42,15 +45,20 @@ public class ToNotifyRank extends RemoteObject implements InterfaceToNotifyRank 
     	
     	if(listeners.get(nome) != null) {
             try{
+                System.out.println("avviso gli utenti che è cambiata la classifica");
                 InterfaceToRankClient client = listeners.get(nome);
                 client.rankUpdated(list);
             }catch (NullPointerException e){
-                System.out.println("Cliente non loggato al momento dello share");
             } catch (RemoteException e) {
                e.printStackTrace();
             }
         }
-        System.out.println("Servizio Callbacks completato ");
+    }
+
+
+    public ConcurrentHashMap<String, Double> SendClassifica(){
+
+        return tabellaClassifica;
     }
     
 

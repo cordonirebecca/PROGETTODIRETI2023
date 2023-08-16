@@ -54,26 +54,26 @@ public class ClientMain {
 				if (!st.isBlank() && !st.startsWith("#")) {
 
 					switch (parolaDivisa[0]) {
-					case ("TCPPORT") -> {
-						TCPPORT = Integer.parseInt(parolaDivisa[1]);
-						// System.out.println("TCPPORT " + TCPPORT);
-					}
-					case ("MULTICAST") -> {
-						MULTICAST = parolaDivisa[1];
-						// System.out.println("MULTICAST " + MULTICAST);
-					}
-					case ("MCASTPORT") -> {
-						MCASTPORT = Integer.parseInt(parolaDivisa[1]);
-						// System.out.println("MCASTPORT " + MCASTPORT);
-					}
-					case ("REGPORT") -> {
-						REGPORT = Integer.parseInt(parolaDivisa[1]);
-						// System.out.println("REGPORT " + REGPORT);
-					}
-					case ("CALLPORT") -> {
-						CALLPORT = Integer.parseInt(parolaDivisa[1]);
-						// System.out.println("CALLPORT " + CALLPORT);
-					}
+						case ("TCPPORT") -> {
+							TCPPORT = Integer.parseInt(parolaDivisa[1]);
+							// System.out.println("TCPPORT " + TCPPORT);
+						}
+						case ("MULTICAST") -> {
+							MULTICAST = parolaDivisa[1];
+							// System.out.println("MULTICAST " + MULTICAST);
+						}
+						case ("MCASTPORT") -> {
+							MCASTPORT = Integer.parseInt(parolaDivisa[1]);
+							// System.out.println("MCASTPORT " + MCASTPORT);
+						}
+						case ("REGPORT") -> {
+							REGPORT = Integer.parseInt(parolaDivisa[1]);
+							// System.out.println("REGPORT " + REGPORT);
+						}
+						case ("CALLPORT") -> {
+							CALLPORT = Integer.parseInt(parolaDivisa[1]);
+							// System.out.println("CALLPORT " + CALLPORT);
+						}
 					}
 				}
 			}
@@ -85,9 +85,9 @@ public class ClientMain {
 		//////////////////////
 		// connessione socket
 		try (Socket socket = new Socket(SERVER_HOST, TCPPORT);
-				BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-				PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-				BufferedReader serverReader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+			 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+			 PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+			 BufferedReader serverReader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
 			System.out.println();
 			System.out.println(
@@ -96,11 +96,11 @@ public class ClientMain {
 			System.out.println("se desideri registrati, digita 'REGISTRAZIONE :<nome>/<password>");
 			System.out.println("se desideri effettuare il login, digita 'LOGIN :<nome>/<password>");
 			System.out.println();
-			System.out.println("per conoscere tutte le statistiche del tuo account digita 'sendMeStatistics:<nome>'");
+			System.out.println("per conoscere tutte le statistiche del tuo account digita 'sendMeStatistics' ");
 			System.out.println();
-			System.out.println("per conoscere tutti i dati che avete condiviso digita 'showMeSharing:<nome>'");
+			System.out.println("per conoscere tutti i dati che avete condiviso digita 'showMeSharing' ");
 			System.out.println();
-			System.out.println("per vedere la classifica digita 'showMeRanking:<nome>'");
+			System.out.println("per vedere la classifica digita 'showMeRanking' ");
 			System.out.println("per uscire dal gioco digita 'LOGOUT : <nome>'");
 			System.out.println();
 			System.out.println(
@@ -111,81 +111,163 @@ public class ClientMain {
 
 			// message contiene il messaggio digitato da tastiera
 			String message;
-			while ((message = reader.readLine()) != null) {
-				// diviso il messaggio in due parti: OPERAZIONE, DATI
+			//variabile che si usa per identificare l'utente
+			String nomeUtente = null;
 
+			while ((message = reader.readLine()) != null) {
+				// Divido il messaggio in due parti: OPERAZIONE, DATI
 				String[] messaggioDiviso = message.split(":");
 				String operazione = messaggioDiviso[0]; // operazione
 
-				// Verifico che l'array contenga due elementi
-				if (messaggioDiviso.length == 2) {
-					dati = messaggioDiviso[1];// dati
+				if (messaggioDiviso.length == 1) { // Caso in cui invii solo il comando
+					switch (operazione) {
 
-					switch (operazione) { // parte per analizzare l'OPERAZIONE
-
-					case ("REGISTRAZIONE") -> {
-
-						// isolo il nome e la psw
-						String[] messaggioDiviso2 = messaggioDiviso[1].split("/");
-						String nome = messaggioDiviso2[0]; // nome
-
-						// controllo che i dati vengano inseriti correttamente
-						if (messaggioDiviso2.length == 2) {
-							String psw = messaggioDiviso2[1]; // psw
-
-							try {
-								Registry registry = LocateRegistry.getRegistry(REGPORT);
-								InterfaceToRegister interfacetoregister = (InterfaceToRegister) registry
-										.lookup("InterfaceToRegister");
-
-								// Chiamata al metodo remoto per registrare un utente
-								boolean registrationResult = interfacetoregister.registrazioneUtente(nome, psw);
-
-								if (registrationResult == false) { // già registrato
-									writer.println("REGISTRAZIONE:" + "stop");
-									writer.flush();
-								} else { // da registrare
-									writer.println("REGISTRAZIONE:" + dati);
-									writer.flush();
-								}
-
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+						case ("sendMeStatistics") -> {
+							// invia il comando e il proprio nome
+							writer.println("sendMeStatistics:" + nomeUtente);
+							writer.flush();
 							// riceve la risposta dal server
 							String serverResponse = serverReader.readLine();
 							System.out.println(
 									"-----------------------------------------------------------------------------------------");
 							System.out.println("Server response: " + serverResponse);
-
-						} else {
-							System.out.println(
-									"-----------------------------------------------------------------------------------------");
-							System.out.println("Devi inserire 'REGISTRAZIONE: nome/password' ");
 						}
-					}
 
-					case ("LOGIN") -> {
-
-						// isolo il nome e la psw
-						String[] messaggioDiviso2 = messaggioDiviso[1].split("/");
-						String nome = messaggioDiviso2[0]; // nome
-
-						if (messaggioDiviso2.length == 2) {
-							String psw = messaggioDiviso2[1]; // psw
-
-							writer.println("LOGIN:" + nome);
+						case ("share")-> {
+							// Utilizza direttamente nomeUtente nel comando
+							writer.println(operazione + ":" + nomeUtente);
 							writer.flush();
 
-							// Avvia il thread per la comunicazione multicast
-							multicastThread = new Thread(
-									new ClientMulticast(MCASTPORT, MULTICAST, datiRicevutiMulticast));
-							multicastThread.start();
+							// riceve la risposta dal server
+							String serverResponse = serverReader.readLine();
+							System.out.println(
+									"-----------------------------------------------------------------------------------------");
+							System.out.println("Server response: " + serverResponse);
+						}
 
+						case ("showMeSharing") -> {
+							// basta che stampo la mia hashmap che contiene i dati del multicast
+							System.out.println(
+									"-----------------------------------------------------------------------------------------");
+							System.out.println("I dati del multicast sono:");
+							System.out.println(datiRicevutiMulticast);
+						}
+
+						case ("showMeRanking") -> {
+							// stampo la classifica
+							System.out.println(
+									"-----------------------------------------------------------------------------------------");
+							System.out.println("La classifica è:");
+							int classificaNumero = 1;
+							for (Map.Entry<String, Double> entry : ToNotifyRank.SendClassifica().entrySet()) {
+								String nome = entry.getKey();
+								Double punteggio = entry.getValue();
+
+								System.out.println("(" + classificaNumero + ") " + nome + " : " + punteggio);
+
+								classificaNumero++;
+							}
+							System.out.println(
+									"-----------------------------------------------------------------------------------------");
+
+						}
+
+						default -> {
+							// Operazione non riconosciuta
+							System.out.println(
+									"-----------------------------------------------------------------------------------------");
+							System.out.println("Operazione non valida: " + operazione);
+						}
+					}
+				} else if (messaggioDiviso.length == 2) { // Caso in cui invii comando e dati
+					dati = messaggioDiviso[1]; // dati
+
+					switch (operazione) {
+						case ("REGISTRAZIONE") -> {
+							// isolo il nome e la psw
+							String[] messaggioDiviso2 = messaggioDiviso[1].split("/");
+							String nome = messaggioDiviso2[0]; // nome
+
+							// controllo che i dati vengano inseriti correttamente
+							if (messaggioDiviso2.length == 2) {
+								String psw = messaggioDiviso2[1]; // psw
+
+								try {
+									Registry registry = LocateRegistry.getRegistry(REGPORT);
+									InterfaceToRegister interfacetoregister = (InterfaceToRegister) registry
+											.lookup("InterfaceToRegister");
+
+									// Chiamata al metodo remoto per registrare un utente
+									boolean registrationResult = interfacetoregister.registrazioneUtente(nome, psw);
+
+									if (registrationResult == false) { // già registrato
+										writer.println("REGISTRAZIONE:" + "stop");
+										writer.flush();
+									} else { // da registrare
+										writer.println("REGISTRAZIONE:" + dati);
+										writer.flush();
+									}
+
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								// riceve la risposta dal server
+								String serverResponse = serverReader.readLine();
+								System.out.println(
+										"-----------------------------------------------------------------------------------------");
+								System.out.println("Server response: " + serverResponse);
+
+							} else {
+								System.out.println(
+										"-----------------------------------------------------------------------------------------");
+								System.out.println("Devi inserire 'REGISTRAZIONE: nome/password' ");
+							}
+						}
+
+						case ("LOGIN") -> {
+							// isolo il nome e la psw
+							String[] messaggioDiviso2 = messaggioDiviso[1].split("/");
+							String nome = messaggioDiviso2[0]; // nome
+
+							if (messaggioDiviso2.length == 2) {
+								String psw = messaggioDiviso2[1]; // psw
+
+								writer.println("LOGIN:" + nome);
+								writer.flush();
+								nomeUtente = nome;
+
+								// Avvia il thread per la comunicazione multicast
+								multicastThread = new Thread(
+										new ClientMulticast(MCASTPORT, MULTICAST, datiRicevutiMulticast));
+								multicastThread.start();
+
+								try {
+									// registro l'utente alle callback
+									ToNotifyRank.registerListener(stub, nome);
+
+								} catch (RemoteException e) {
+									e.printStackTrace();
+								}
+								// riceve la risposta dal server
+								String serverResponse = serverReader.readLine();
+								System.out.println(
+										"-----------------------------------------------------------------------------------------");
+								System.out.println("Server response: " + serverResponse);
+							} else {
+								System.out.println(
+										"-----------------------------------------------------------------------------------------");
+								System.out.println("Devi inserire 'LOGIN:nome/password' ");
+							}
+						}
+
+						case ("LOGOUT") -> {
+							writer.println("LOGOUT:" + dati);
+							writer.flush();
+
+							multicastThread.interrupt();
+							// lo elimino dalle callback
 							try {
-								// registro l'utente alle callback
-								ToNotifyRank.registerListener(stub, nome);
-
+								ToNotifyRank.unregisterListener(stub, dati);
 							} catch (RemoteException e) {
 								e.printStackTrace();
 							}
@@ -194,118 +276,52 @@ public class ClientMain {
 							System.out.println(
 									"-----------------------------------------------------------------------------------------");
 							System.out.println("Server response: " + serverResponse);
-						} else {
+						}
+
+						case ("playWORDLE") -> {
+							// invio la parola per la prima volta e controllo
+							// che l'utente non abbia già giocato con la secret Word
+							numeroVolteMax = 0;
+							writer.println("playWORDLE:" + dati);
+							writer.flush();
+							nomeUtente = dati;
+							// riceve la risposta dal server
+							String serverResponse = serverReader.readLine();
 							System.out.println(
 									"-----------------------------------------------------------------------------------------");
-							System.out.println("Devi inserire 'LOGIN: nome/password' ");
+							System.out.println("Server response: " + serverResponse);
 						}
-					}
 
-					case ("LOGOUT") -> {
+						case ("sendWORD") -> {
+							numeroVolteMax++;
 
-						writer.println("LOGOUT:" + dati);
-						writer.flush();
-
-						multicastThread.interrupt();
-						// lo elimino dalle callback
-						try {
-							ToNotifyRank.unregisterListener(stub, dati);
-						} catch (RemoteException e) {
-							e.printStackTrace();
-						}
-						// riceve la risposta dal server
-						String serverResponse = serverReader.readLine();
-						System.out.println(
-								"-----------------------------------------------------------------------------------------");
-						System.out.println("Server response: " + serverResponse);
-					}
-
-					case ("playWORDLE") -> {
-						// invio la parola per la prima volta e controllo
-						// che l'utente non abbia già giocato con la secret Word
-						numeroVolteMax = 0;
-						writer.println("playWORDLE:" + dati);
-						writer.flush();
-						// riceve la risposta dal server
-						String serverResponse = serverReader.readLine();
-						System.out.println(
-								"-----------------------------------------------------------------------------------------");
-						System.out.println("Server response: " + serverResponse);
-					}
-
-					case ("sendWORD") -> {
-
-						numeroVolteMax++;
-
-						if (numeroVolteMax == 14) {
-							// ha finito i tentativi, rinizia la partita, se possibile
-							numeroVolteMax = 0;
-						}
-						if (numeroVolteMax == 13) {
+							if (numeroVolteMax == 14) {
+								// ha finito i tentativi, rinizia la partita, se possibile
+								numeroVolteMax = 0;
+							}
+							if (numeroVolteMax == 12) {
+								System.out.println(
+										"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+								System.out.println("Hai l'ultima chance");
+								System.out.println(
+										"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							}
+							// Invia il comando di condivisione al server
+							writer.println("sendWORD:" + dati + "/" + nomeUtente + "," + numeroVolteMax);
+							writer.flush();
+							// riceve la risposta dal server
+							String serverResponse = serverReader.readLine();
 							System.out.println(
-									"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-							System.out.println("Hai l'ultima chance");
-							System.out.println(
-									"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+									"-----------------------------------------------------------------------------------------");
+							System.out.println("Server response: " + serverResponse);
 						}
-						// Invia il comando di condivisione al server
-						writer.println("sendWORD:" + dati + "," + numeroVolteMax);
-						writer.flush();
-						// riceve la risposta dal server
-						String serverResponse = serverReader.readLine();
-						System.out.println(
-								"-----------------------------------------------------------------------------------------");
-						System.out.println("Server response: " + serverResponse);
-					}
 
-					case ("sendMeStatistics") -> {
-						// invia il comando e il proprio nome
-						writer.println("sendMeStatistics:" + dati);
-						writer.flush();
-						// riceve la risposta dal server
-						String serverResponse = serverReader.readLine();
-						System.out.println(
-								"-----------------------------------------------------------------------------------------");
-						System.out.println("Server response: " + serverResponse);
-					}
-
-					case ("share") -> {
-						// condivisione dell'esito sul gruppo sociale
-						// mando nome
-						writer.println("share:" + dati);
-						writer.flush();
-						// riceve la risposta dal server
-						String serverResponse = serverReader.readLine();
-						System.out.println(
-								"-----------------------------------------------------------------------------------------");
-						System.out.println("Server response: " + serverResponse);
-
-					}
-
-					case ("showMeSharing") -> {
-						// basta che stampo la mia hashmap che contiene i dati del multicast
-						System.out.println(
-								"-----------------------------------------------------------------------------------------");
-						System.out.println("I dati del multicast sono:");
-						System.out.println(datiRicevutiMulticast);
-					}
-
-					case ("showMeRanking") -> {
-						// stampo la classifica
-						System.out.println(
-								"-----------------------------------------------------------------------------------------");
-						System.out.println("La classifica è:");
-						System.out.println(list);
-					}
-
-					default -> {
-						// Operazione non riconosciuta
-						System.out.println(
-								"-----------------------------------------------------------------------------------------");
-						System.out.println("Operazione non valida: " + operazione);
-
-					}
-
+						default -> {
+							// Operazione non riconosciuta
+							System.out.println(
+									"-----------------------------------------------------------------------------------------");
+							System.out.println("Operazione non valida: " + operazione);
+						}
 					}
 				} else {
 					System.out.println(
@@ -313,6 +329,7 @@ public class ClientMain {
 					System.out.println("Errore: messaggio non valido.");
 					System.out.println();
 				}
+
 
 			}
 		} catch (IOException e) {

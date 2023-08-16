@@ -36,7 +36,7 @@ public class ServerMain {
 	private static ConcurrentLinkedQueue<String> utentiOnline = new ConcurrentLinkedQueue<>();
 
 	// map con gli utenti e i punteggi
-	private static ConcurrentHashMap<String, Double> tabellaClassifica = new ConcurrentHashMap<String, Double>();
+	public static ConcurrentHashMap<String, Double> tabellaClassifica = new ConcurrentHashMap<String, Double>();
 
 	// concurrent hashMap che contiene i dati degli utenti:
 	// il primo valore rappresenta l'username e il secondo un oggetto di tipo
@@ -68,30 +68,30 @@ public class ServerMain {
 				if (!st.isBlank() && !st.startsWith("#")) {
 
 					switch (parolaDivisa[0]) {
-					case ("TCPPORT") -> {
-						TCPPORT = Integer.parseInt(parolaDivisa[1]);
-						// System.out.println("TCPPORT " + TCPPORT);
-					}
-					case ("MULTICAST") -> {
-						MULTICAST = parolaDivisa[1];
-						// System.out.println("MULTICAST " + MULTICAST);
-					}
-					case ("MCASTPORT") -> {
-						MCASTPORT = Integer.parseInt(parolaDivisa[1]);
-						// System.out.println("MCASTPORT " + MCASTPORT);
-					}
-					case ("REGPORT") -> {
-						REGPORT = Integer.parseInt(parolaDivisa[1]);
-						// System.out.println("REGPORT " + REGPORT);
-					}
-					case ("CALLPORT") -> {
-						CALLPORT = Integer.parseInt(parolaDivisa[1]);
-						// System.out.println("CALLPORT " + CALLPORT);
-					}
-					case ("TIMEOUT") -> {
-						TIMEOUT = Integer.parseInt(parolaDivisa[1]);
-						// System.out.println("TIMEOUT " + TIMEOUT);
-					}
+						case ("TCPPORT") -> {
+							TCPPORT = Integer.parseInt(parolaDivisa[1]);
+							// System.out.println("TCPPORT " + TCPPORT);
+						}
+						case ("MULTICAST") -> {
+							MULTICAST = parolaDivisa[1];
+							// System.out.println("MULTICAST " + MULTICAST);
+						}
+						case ("MCASTPORT") -> {
+							MCASTPORT = Integer.parseInt(parolaDivisa[1]);
+							// System.out.println("MCASTPORT " + MCASTPORT);
+						}
+						case ("REGPORT") -> {
+							REGPORT = Integer.parseInt(parolaDivisa[1]);
+							// System.out.println("REGPORT " + REGPORT);
+						}
+						case ("CALLPORT") -> {
+							CALLPORT = Integer.parseInt(parolaDivisa[1]);
+							// System.out.println("CALLPORT " + CALLPORT);
+						}
+						case ("TIMEOUT") -> {
+							TIMEOUT = Integer.parseInt(parolaDivisa[1]);
+							// System.out.println("TIMEOUT " + TIMEOUT);
+						}
 					}
 				}
 			}
@@ -129,24 +129,24 @@ public class ServerMain {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		// RMI per le callback
-				try {
-					notifier = new ToNotifyRank();
-					InterfaceToNotifyRank stub = (InterfaceToNotifyRank) UnicastRemoteObject.exportObject(notifier, 0);
-					// Creazione del registro RMI sulla porta 1099
-					Registry registry = LocateRegistry.createRegistry(CALLPORT);
+		try {
+			notifier = new ToNotifyRank(tabellaClassifica);
+			InterfaceToNotifyRank stub = (InterfaceToNotifyRank) UnicastRemoteObject.exportObject(notifier, 0);
+			// Creazione del registro RMI sulla porta 1099
+			Registry registry = LocateRegistry.createRegistry(CALLPORT);
 
-					// Pubblicazione dell'oggetto remoto nel registro
-					registry.rebind("InterfaceToNotifyRank", stub);
+			// Pubblicazione dell'oggetto remoto nel registro
+			registry.rebind("InterfaceToNotifyRank", stub);
 
-					System.out.println("Server RMI per callback avviato con successo");
-				} catch (RemoteException e) {
-					System.err.println("Errore durante l'avvio del server: " + e);
+			System.out.println("Server RMI per callback avviato con successo");
+		} catch (RemoteException e) {
+			System.err.println("Errore durante l'avvio del server: " + e);
 
-				}
+		}
 
-		
+
 
 		// Avvia il thread per la comunicazione multicast
 		Thread multicastThread = new Thread(new ServerMulticast(MCASTPORT, MULTICAST));
@@ -242,20 +242,15 @@ public class ServerMain {
 	public static String getParolaDatabaseUltima() {
 		return paroleDatabase.lastElement();
 	}
-	
-	
-	
-	
-	
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 	// mi serve una funzione che crei la tabella dato il punteggio
 	// il puntegggio è calcolato dalla funzione nel clientHandler 'CalcoloPunteggio'
 	public static void SetTabellaClassifica(String nome, Double punteggio) {
 		// Aggiunta o modifica del punteggio nella tabella
 		if (tabellaClassifica.putIfAbsent(nome, punteggio) != null) {
 			System.out.println(
-					"Il vecchio punteggio era: " + tabellaClassifica.get(nome) + "\nil nuovo punteggio è:" + punteggio);
+					"il tuo punteggio precedente: " + tabellaClassifica.get(nome) + "\nil tuo nuovo punteggio:" + punteggio);
 			tabellaClassifica.replace(nome, tabellaClassifica.get(nome), punteggio);
 		}
 
@@ -274,6 +269,7 @@ public class ServerMain {
 		// Ordina la lista in base ai punteggi
 		list.sort(Map.Entry.comparingByValue());
 
+
 		// Estrai i primi tre nomi dalla lista ordinata
 		List<String> primiTreNomiNuovi = new ArrayList<>();
 		for (int i = 0; i < Math.min(3, list.size()); i++) {
@@ -289,14 +285,13 @@ public class ServerMain {
 		}
 
 	}
-	
-	
+
 
 	// metodo per salvare le parole in JSON
 	private static void salvataggioParoleDatabase() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("file/Parole_database.json"))) {
+		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("Parole_database.json"))) {
 			Type pGiocateType = new TypeToken<Vector<String>>() {
 			}.getType();
 			String p = gson.toJson(paroleDatabase, pGiocateType);
@@ -313,7 +308,7 @@ public class ServerMain {
 		} catch (FileNotFoundException f) {
 
 			try {
-				File fi = new File("file/Parole_database.json");
+				File fi = new File("Parole_database.json");
 				if (fi.createNewFile()) {
 					System.out.println("Il file è stato creato correttamente: " + fi);
 				} else {
@@ -333,7 +328,7 @@ public class ServerMain {
 	public static void salvataggioUtentiOnline() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("file/Utenti_online.json"))) {
+		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("Utenti_online.json"))) {
 			Type pGiocateType = new TypeToken<ConcurrentLinkedQueue<String>>() {
 			}.getType();
 			String p = gson.toJson(utentiOnline, pGiocateType);
@@ -350,7 +345,7 @@ public class ServerMain {
 		} catch (FileNotFoundException f) {
 
 			try {
-				File fi = new File("file/Utenti_online.json");
+				File fi = new File("Utenti_online.json");
 				if (fi.createNewFile()) {
 					System.out.println("Il file è stato creato correttamente: " + fi);
 				} else {
@@ -370,7 +365,7 @@ public class ServerMain {
 	private static void salvataggioTabellaClassifica() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("file/Tabella_classifica.json"))) {
+		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("Tabella_classifica.json"))) {
 			Type pGiocateType = new TypeToken<ConcurrentHashMap<String, Double>>() {
 			}.getType();
 			String p = gson.toJson(tabellaClassifica, pGiocateType);
@@ -387,7 +382,7 @@ public class ServerMain {
 		} catch (FileNotFoundException f) {
 
 			try {
-				File fi = new File("file/Tabella_classifica.json");
+				File fi = new File("Tabella_classifica.json");
 				if (fi.createNewFile()) {
 					System.out.println("Il file è stato creato correttamente: " + fi);
 				} else {
@@ -407,7 +402,7 @@ public class ServerMain {
 	public static void salvataggioUtenteMap() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("file/Utente_map.json"))) {
+		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("Utente_map.json"))) {
 			Type pGiocateType = new TypeToken<ConcurrentHashMap<String, Utente>>() {
 			}.getType();
 			String p = gson.toJson(UtenteMap, pGiocateType);
@@ -424,7 +419,7 @@ public class ServerMain {
 		} catch (FileNotFoundException f) {
 
 			try {
-				File fi = new File("file/Utente_map.json");
+				File fi = new File("Utente_map.json");
 				if (fi.createNewFile()) {
 					System.out.println("Il file è stato creato correttamente: " + fi);
 				} else {
@@ -443,7 +438,7 @@ public class ServerMain {
 	private static void riattivazioneParoleDatabase() {
 		Gson gson = new Gson();
 
-		try (BufferedReader reader = new BufferedReader((new FileReader("file/Parole_database.json")))) {
+		try (BufferedReader reader = new BufferedReader((new FileReader("Parole_database.json")))) {
 			Type vincitoriType = new TypeToken<Vector<String>>() {
 			}.getType();
 			Vector<String> v = gson.fromJson(reader, vincitoriType);
@@ -460,7 +455,7 @@ public class ServerMain {
 		} catch (FileNotFoundException f) {
 
 			try {
-				File fi = new File("file/Parole_database.json");
+				File fi = new File("Parole_database.json");
 				if (fi.createNewFile()) {
 					System.out.println(fi + " creato correttamente");
 				} else {
@@ -480,7 +475,7 @@ public class ServerMain {
 	private static void riattivazioneUtentiOnline() {
 		Gson gson = new Gson();
 
-		try (BufferedReader reader = new BufferedReader((new FileReader("file/Utenti_online.json")))) {
+		try (BufferedReader reader = new BufferedReader((new FileReader("Utenti_online.json")))) {
 			Type vincitoriType = new TypeToken<ConcurrentLinkedQueue<String>>() {
 			}.getType();
 			ConcurrentLinkedQueue<String> v = gson.fromJson(reader, vincitoriType);
@@ -496,7 +491,7 @@ public class ServerMain {
 		} catch (FileNotFoundException f) {
 
 			try {
-				File fi = new File("file/Utenti_online.json");
+				File fi = new File("Utenti_online.json");
 				if (fi.createNewFile()) {
 					System.out.println(fi + " creato correttamente");
 				} else {
@@ -516,7 +511,7 @@ public class ServerMain {
 	private static void riattivazioneTabellaClassifica() {
 		Gson gson = new Gson();
 
-		try (BufferedReader reader = new BufferedReader((new FileReader("file/Tabella_classifica.json")))) {
+		try (BufferedReader reader = new BufferedReader((new FileReader("Tabella_classifica.json")))) {
 			Type vincitoriType = new TypeToken<ConcurrentHashMap<String, Double>>() {
 			}.getType();
 			ConcurrentHashMap<String, Double> v = gson.fromJson(reader, vincitoriType);
@@ -532,7 +527,7 @@ public class ServerMain {
 		} catch (FileNotFoundException f) {
 
 			try {
-				File fi = new File("file/Tabella_classifica.json");
+				File fi = new File("Tabella_classifica.json");
 				if (fi.createNewFile()) {
 					System.out.println(fi + " creato correttamente");
 				} else {
@@ -552,7 +547,7 @@ public class ServerMain {
 	private static void riattivazioneUtenteMap() {
 		Gson gson = new Gson();
 
-		try (BufferedReader reader = new BufferedReader((new FileReader("file/Utente_map.json")))) {
+		try (BufferedReader reader = new BufferedReader((new FileReader("Utente_map.json")))) {
 			Type vincitoriType = new TypeToken<ConcurrentHashMap<String, Utente>>() {
 			}.getType();
 			ConcurrentHashMap<String, Utente> v = gson.fromJson(reader, vincitoriType);
@@ -568,7 +563,7 @@ public class ServerMain {
 		} catch (FileNotFoundException f) {
 
 			try {
-				File fi = new File("file/Utente_map.json");
+				File fi = new File("Utente_map.json");
 				if (fi.createNewFile()) {
 					System.out.println(fi + " creato correttamente");
 				} else {
@@ -584,6 +579,6 @@ public class ServerMain {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 }

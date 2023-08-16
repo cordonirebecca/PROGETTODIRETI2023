@@ -25,9 +25,9 @@ public class ClientHandler implements Runnable {
 	static String MULTICAST;
 	private static List<Map.Entry<String, Double>> listToCompareClassifica = new ArrayList<Map.Entry<String, Double>>();
 
-	
+
 	public ClientHandler(Socket clientSocket, ConcurrentLinkedQueue<String> utentiOnline,
-			ConcurrentHashMap<String, Utente> UtenteMap, int MCASTPORT, String MULTICAST) {
+						 ConcurrentHashMap<String, Utente> UtenteMap, int MCASTPORT, String MULTICAST) {
 		this.clientSocket = clientSocket;
 		this.utentiOnline = utentiOnline;
 		this.UtenteMap = UtenteMap;
@@ -38,12 +38,13 @@ public class ClientHandler implements Runnable {
 	@Override
 	public void run() {
 		try (InputStream inputStream = clientSocket.getInputStream();
-				OutputStream outputStream = clientSocket.getOutputStream();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-				PrintWriter writer = new PrintWriter(outputStream)) {
+			 OutputStream outputStream = clientSocket.getOutputStream();
+			 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+			 PrintWriter writer = new PrintWriter(outputStream)) {
 
 			String clientMessage;
 			String parolaTradotta;
+			Utente utente;
 
 			while ((clientMessage = reader.readLine()) != null) {
 				System.out.println("Received message from client: " + clientMessage);
@@ -53,21 +54,21 @@ public class ClientHandler implements Runnable {
 
 				if (clientMessage.contains("REGISTRAZIONE")) {
 					int startIndex = clientMessage.indexOf(":") + 1; // Calcola l'indice di inizio della parte
-																		// desiderata
+					// desiderata
 
 					String desiredPart = clientMessage.substring(startIndex);
 
 					if (desiredPart.equals("stop")) {
-						response = "utente già registrato,digita 'LOGIN: <nome>/<password>'";
+						response = "utente già registrato,digita 'LOGIN:<nome>/<password>'";
 					} else {
-						response = "utente registrato con successo,digita 'LOGIN: <nome>/<password>'";
+						response = "utente registrato con successo,digita 'LOGIN:<nome>/<password>'";
 					}
 				}
 
 				if (clientMessage.contains("LOGIN")) {
 
 					int startIndex = clientMessage.indexOf(":") + 1; // Calcola l'indice di inizio della parte
-																		// desiderata
+					// desiderata
 
 					String desiredPart = clientMessage.substring(startIndex);
 
@@ -77,7 +78,7 @@ public class ClientHandler implements Runnable {
 
 						// controllo che non ci sia un altro utente già online con stesso nome
 						if (utentiOnline.contains(desiredPart)) {
-							response = "utente già collegato";
+							response = "utente già collegato! Iniziamo a giocare! digita 'playWORDLE:<nome>'";
 
 						} else {
 							utentiOnline.add(desiredPart);
@@ -92,7 +93,7 @@ public class ClientHandler implements Runnable {
 
 				if (clientMessage.contains("LOGOUT")) {
 					int startIndex = clientMessage.indexOf(":") + 1; // Calcola l'indice di inizio della parte
-																		// desiderata
+					// desiderata
 
 					String desiredPart = clientMessage.substring(startIndex);
 
@@ -100,9 +101,9 @@ public class ClientHandler implements Runnable {
 					// lo elimino dalla lista degli attivi
 					if (utentiOnline.contains(desiredPart)) {
 						utentiOnline.remove(desiredPart);
-						response = "RIMOSSO:" + desiredPart;
+						response = "Utente rimosso correttamente: " + desiredPart;
 					} else {
-						response = "l'utente risulta non collegato";
+						response = "L'utente risulta non collegato";
 					}
 				}
 
@@ -114,7 +115,7 @@ public class ClientHandler implements Runnable {
 					String username = clientMessage.substring(startIndex);
 
 					if (UtenteMap.containsKey(username)) {
-						Utente utente = UtenteMap.get(username);
+						utente = UtenteMap.get(username);
 
 						// gli passo l'ultima parola estratta
 						secretWord = ServerMain.getParolaDatabaseUltima();
@@ -123,13 +124,13 @@ public class ClientHandler implements Runnable {
 						String ultimaParolaGiocata = utente.getUltimoParoleGiocate();
 
 						if (ultimaParolaGiocata == null) { // prima volta
-							response = "digita 'sendWORD :guessed Word / <nome>' per iniziare a giocare! ";
+							response = "digita 'sendWORD :guessed Word' per iniziare a giocare! ";
 							utente.addParoleGiocate(secretWord);
 							System.out.println(utente.getUltimoParoleGiocate());
 
 						} else if (!utente.getUltimoParoleGiocate().equals(secretWord)) {// casi successivi
 							utente.SetWordGuessed(false);
-							response = "digita 'sendWORD :guessed Word / <nome>' per iniziare a giocare! ";
+							response = "digita 'sendWORD :guessedWord' per iniziare a giocare! ";
 							utente.addParoleGiocate(secretWord);
 							System.out.println(utente.getUltimoParoleGiocate());
 
@@ -159,7 +160,7 @@ public class ClientHandler implements Runnable {
 					String parolaInviata = messaggioDiviso2[0];
 					String nome = messaggioDiviso2[1]; // nome utente che invia
 					int tentativo = Integer.parseInt(numeroTentativo);
-					Utente utente = UtenteMap.get(nome);
+					utente = UtenteMap.get(nome);
 
 					// controllo che la parola inviata sia di 10 caratteri, altrimenti reinserisco
 					if (parolaInviata.length() == 10) {
@@ -198,7 +199,7 @@ public class ClientHandler implements Runnable {
 									response = " - Hai indovinato! La parola era: " + secretWord + " .Traduzione: "
 											+ parolaTradotta
 											+ " .Digita 'playWORDLE:<nome>' per sapere se è già possibile rigiocare";
-									
+
 									//metto nella listToCompareClassifica la lista aggiornata della classifica
 									ServerMain.SetTabellaClassifica(nome, CalcoloPunteggio(nome));
 									System.out.println("LISTA NEL CLIENT: " + listToCompareClassifica);
@@ -222,7 +223,7 @@ public class ClientHandler implements Runnable {
 								response = "Hai esaurito i tentativi. La parola era: " + secretWord + " .Traduzione: "
 										+ parolaTradotta
 										+ " .Digita 'playWORDLE:<nome>' per sapere se è già possibile rigiocare";
-								
+
 								//metto nella listToCompareClassifica la lista aggiornata della classifica
 								ServerMain.SetTabellaClassifica(nome, CalcoloPunteggio(nome));
 							}
@@ -258,7 +259,7 @@ public class ClientHandler implements Runnable {
 					double guessDistribution = 0;
 
 					// Ottieni le statistiche per l'utente specifico
-					Utente utente = UtenteMap.get(nome);
+					utente = UtenteMap.get(nome);
 
 					// numero dell'ultima vittoria consecutiva
 					ultimaSequenzaContinuaDiVittorie = calcoloVittorieConsecutive(utente.getParoleGiocate(),
@@ -278,7 +279,7 @@ public class ClientHandler implements Runnable {
 
 					// guess distribution
 					if (partiteVinte != 0) { // controllo che abbia vinto almeno una partita sennò mi viene una
-												// divisione per 0
+						// divisione per 0
 						int numeroTentativiUtente = utente
 								.sommaTentativiPartiteVinte(utente.getTentativiPartiteVinte());
 						;
@@ -311,7 +312,6 @@ public class ClientHandler implements Runnable {
 					}
 
 				}
-				
 
 				// Send response to client
 				writer.println(response);
@@ -350,7 +350,7 @@ public class ClientHandler implements Runnable {
 	// funzione che calcola il numero di vittorie MAX consecutive
 	// confronta le due liste e se manca una parola, azzera il contatore
 	public static int calcoloMAXVittorieConsecutive(ConcurrentLinkedQueue<String> partiteGiocate,
-			ConcurrentLinkedQueue<String> partiteVinte) {
+													ConcurrentLinkedQueue<String> partiteVinte) {
 		int maxVittorieConsecutive = 0;
 		int vittorieConsecutiveCorrenti = 0;
 
@@ -368,7 +368,7 @@ public class ClientHandler implements Runnable {
 
 	// calcola solo il numero dell'ultima seuquenza di vittorie
 	public static int calcoloVittorieConsecutive(ConcurrentLinkedQueue<String> partiteGiocate,
-			ConcurrentLinkedQueue<String> partiteVinte) {
+												 ConcurrentLinkedQueue<String> partiteVinte) {
 		int vittorieConsecutiveCorrenti = 0;
 
 		for (String parola : partiteGiocate) {
@@ -394,15 +394,15 @@ public class ClientHandler implements Runnable {
 		// numero di tutti i tentativi di tutte le partite giocate /numero delle partite
 		// giocate
 		int partiteGiocate = utente.getPartiteGiocate();
-		
+
 		// calcolo tutti i tentativi effettuati
 		for (int valore : utente.getMapTentativiUtente().values()) {
 			somma += valore;
 		}
-		
+
 		if (partiteGiocate != 0) {
 			punteggio = partiteVinte * (somma / partiteGiocate);
-			
+
 		} else {
 			// caso in cui non ha mai giocato !
 			return -1;
@@ -413,7 +413,7 @@ public class ClientHandler implements Runnable {
 
 	}
 
-    //invio dati multicast al server
+	//invio dati multicast al server
 	public static void sendDataToServer(double value, String str) {
 		try (DatagramSocket datagramSocket = new DatagramSocket()) {
 			InetAddress group = InetAddress.getByName(MULTICAST);
@@ -431,8 +431,8 @@ public class ClientHandler implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+
+
+
 
 }

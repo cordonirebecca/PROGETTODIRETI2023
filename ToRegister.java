@@ -36,7 +36,6 @@ public class ToRegister extends RemoteServer implements InterfaceToRegister {
 					partiteVinte, partiteGiocate, tentativoUtente, wordGuessed,MapTentativiUtente,paroleNonGiocate,tentativiPartiteVinte));
 			
 			ServerMain.salvataggioUtenteMap();
-			System.out.println("salvataggio RMI andato a buon fine");
 			return true; // registrazione andata a buon fine
 		} else {
 			return false; // registrazione fallita

@@ -19,20 +19,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ClientHandler implements Runnable {
 	private final Socket clientSocket;
 	private static ConcurrentLinkedQueue<String> utentiOnline;
-	private ConcurrentHashMap<String, Utente> UtenteMap;
+	private final ConcurrentHashMap<String, Utente> UtenteMap;
 	String secretWord;
 	static int MCASTPORT;
 	static String MULTICAST;
-	private static List<Map.Entry<String, Double>> listToCompareClassifica = new ArrayList<Map.Entry<String, Double>>();
+	private static final List<Map.Entry<String, Double>> listToCompareClassifica = new ArrayList<Map.Entry<String, Double>>();
 
 
 	public ClientHandler(Socket clientSocket, ConcurrentLinkedQueue<String> utentiOnline,
 						 ConcurrentHashMap<String, Utente> UtenteMap, int MCASTPORT, String MULTICAST) {
 		this.clientSocket = clientSocket;
-		this.utentiOnline = utentiOnline;
+		ClientHandler.utentiOnline = utentiOnline;
 		this.UtenteMap = UtenteMap;
-		this.MCASTPORT = MCASTPORT;
-		this.MULTICAST = MULTICAST;
+		ClientHandler.MCASTPORT = MCASTPORT;
+		ClientHandler.MULTICAST = MULTICAST;
 	}
 
 	@Override
@@ -72,18 +72,19 @@ public class ClientHandler implements Runnable {
 
 					String desiredPart = clientMessage.substring(startIndex);
 
+
 					// Se l'utente non è registrato non può fare login
 					if (UtenteMap.containsKey(desiredPart)) { // qui fa il login felice
-						response = "utente registrato, abilitato al login";
+						response = "utente registrato, abilitato al login" + "/" + MULTICAST;
 
 						// controllo che non ci sia un altro utente già online con stesso nome
 						if (utentiOnline.contains(desiredPart)) {
-							response = "utente già collegato! Iniziamo a giocare! digita 'playWORDLE:<nome>'";
+							response = "utente già collegato! Iniziamo a giocare! digita 'playWORDLE:<nome>'" + "/" + MULTICAST;
 
 						} else {
 							utentiOnline.add(desiredPart);
 							ServerMain.salvataggioUtentiOnline();
-							response = "utente collegato con successo! Iniziamo a giocare! digita 'playWORDLE:<nome>'";
+							response = "utente collegato con successo! Iniziamo a giocare! digita 'playWORDLE:<nome>'" + "/" + MULTICAST;
 						}
 					} else { // deve fare la registrazione
 						response = "utente non registrato, perfavore effettua REGISTRAZIONE:<nome>/<password>";
@@ -166,11 +167,11 @@ public class ClientHandler implements Runnable {
 					if (parolaInviata.length() == 10) {
 
 						// se le parole giocate e le parole del server sono uguali allora si gioca
-						if (utente.getWordGuessed() == true) {
+						if (utente.getWordGuessed()) {
 							response = "Hai già giocato, digita 'playWORDLE:<nome>' per sapere se è già possibile rigiocare";
 
 						} else {
-							while (utente.getWordGuessed() == false && attempts > 0 && tentativo < 13) {
+							while (!utente.getWordGuessed() && attempts > 0 && tentativo < 13) {
 
 								if (parolaInviata.equals(secretWord)) { // ha vinto
 
@@ -200,9 +201,8 @@ public class ClientHandler implements Runnable {
 											+ parolaTradotta
 											+ " .Digita 'playWORDLE:<nome>' per sapere se è già possibile rigiocare";
 
-									//metto nella listToCompareClassifica la lista aggiornata della classifica
+
 									ServerMain.SetTabellaClassifica(nome, CalcoloPunteggio(nome));
-									System.out.println("LISTA NEL CLIENT: " + listToCompareClassifica);
 									break;
 
 								} else {
@@ -210,11 +210,11 @@ public class ClientHandler implements Runnable {
 											+ tentativo;
 								}
 
-								response = response.toString();
+								response = response;
 								attempts--;
 							}
 
-							if (utente.getWordGuessed() == false && tentativo == 13) { // ha perso
+							if (!utente.getWordGuessed() && tentativo == 13) { // ha perso
 								// aumento il numero di partite giocate
 								utente.incrementaPartiteGiocate();
 								utente.SetWordGuessed(true);
@@ -224,7 +224,6 @@ public class ClientHandler implements Runnable {
 										+ parolaTradotta
 										+ " .Digita 'playWORDLE:<nome>' per sapere se è già possibile rigiocare";
 
-								//metto nella listToCompareClassifica la lista aggiornata della classifica
 								ServerMain.SetTabellaClassifica(nome, CalcoloPunteggio(nome));
 							}
 						}
@@ -282,8 +281,7 @@ public class ClientHandler implements Runnable {
 						// divisione per 0
 						int numeroTentativiUtente = utente
 								.sommaTentativiPartiteVinte(utente.getTentativiPartiteVinte());
-						;
-						guessDistribution = numeroTentativiUtente / partiteVinte;
+                        guessDistribution = numeroTentativiUtente / partiteVinte;
 					} else {
 						guessDistribution = 0;
 					}
@@ -419,7 +417,7 @@ public class ClientHandler implements Runnable {
 			InetAddress group = InetAddress.getByName(MULTICAST);
 
 			// Unisco i due valori con un delimitatore
-			String data = String.valueOf(value) + ":" + str;
+			String data = value + ":" + str;
 
 			// Converte la stringa in array di byte e crea il pacchetto
 			byte[] buffer = data.getBytes();

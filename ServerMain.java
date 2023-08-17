@@ -19,7 +19,7 @@ import java.util.Vector;
 public class ServerMain {
 
 	private static int TCPPORT;
-	private static String MULTICAST;
+	public static String MULTICAST;
 	private static int MCASTPORT;
 	private static int REGPORT;
 	private static int CALLPORT;
@@ -107,7 +107,7 @@ public class ServerMain {
 		riattivazioneUtenteMap();
 
 		// funzione che genera in modo casuale la parola del giorno
-		// apro il vocabolario e prendo a caso una parola che sarÃ  la Secret Word
+		// apro il vocabolario e prendo a caso una parola che sarà la Secret Word
 		String filePath = "vocabolario.txt";
 
 		// Creiamo e avviamo il thread per generare una nuova secretWord ogni 10 secondi

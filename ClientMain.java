@@ -58,10 +58,6 @@ public class ClientMain {
 							TCPPORT = Integer.parseInt(parolaDivisa[1]);
 							// System.out.println("TCPPORT " + TCPPORT);
 						}
-						case ("MULTICAST") -> {
-							MULTICAST = parolaDivisa[1];
-							// System.out.println("MULTICAST " + MULTICAST);
-						}
 						case ("MCASTPORT") -> {
 							MCASTPORT = Integer.parseInt(parolaDivisa[1]);
 							// System.out.println("MCASTPORT " + MCASTPORT);
@@ -236,6 +232,14 @@ public class ClientMain {
 								writer.flush();
 								nomeUtente = nome;
 
+								// riceve la risposta dal server : frase/MULTICASTaddress
+								String serverResponse = serverReader.readLine();
+
+								//separo la frase dall'indirizzo
+								String[] parts = serverResponse.split("/");
+								String afterSlash = parts[1];
+								MULTICAST = afterSlash; //assegno l'indirizzo alla variabile
+
 								// Avvia il thread per la comunicazione multicast
 								multicastThread = new Thread(
 										new ClientMulticast(MCASTPORT, MULTICAST, datiRicevutiMulticast));
@@ -248,11 +252,11 @@ public class ClientMain {
 								} catch (RemoteException e) {
 									e.printStackTrace();
 								}
-								// riceve la risposta dal server
-								String serverResponse = serverReader.readLine();
+
 								System.out.println(
 										"-----------------------------------------------------------------------------------------");
-								System.out.println("Server response: " + serverResponse);
+								System.out.println("Server response: " + parts[0]); // è la risposta pulita senza multicastADDRESS
+
 							} else {
 								System.out.println(
 										"-----------------------------------------------------------------------------------------");
@@ -264,13 +268,16 @@ public class ClientMain {
 							writer.println("LOGOUT:" + dati);
 							writer.flush();
 
+							//interrompo thread multicast
 							multicastThread.interrupt();
+
 							// lo elimino dalle callback
 							try {
 								ToNotifyRank.unregisterListener(stub, dati);
 							} catch (RemoteException e) {
 								e.printStackTrace();
 							}
+							
 							// riceve la risposta dal server
 							String serverResponse = serverReader.readLine();
 							System.out.println(

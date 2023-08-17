@@ -3,9 +3,6 @@
 # Porta TCP server
 TCPPORT=6666
 
-# Indirizzo di multicast
-MULTICAST=239.255.32.32
-
 # Porta di multicast
 MCASTPORT=44444
 

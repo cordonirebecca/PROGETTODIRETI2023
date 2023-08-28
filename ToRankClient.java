@@ -23,8 +23,10 @@ public class ToRankClient extends RemoteException implements InterfaceToRankClie
         System.out.println("PRIME TRE POSIZIONI VARIATE ! ");
 
         int position = 1;
-        for (Map.Entry<String, Double> entry : this.list) {
-            System.out.println("("+ position + ") " + entry);
+        for (Map.Entry<String, Double> entry : list) {
+            if (position <= 3) {  // Stampa solo le prime tre posizioni
+                System.out.println("(" + position + ") " + entry);
+            }
             position++;
         }
     }

@@ -155,12 +155,10 @@ public class ClientMain {
 									"-----------------------------------------------------------------------------------------");
 							System.out.println("La classifica è:");
 							int classificaNumero = 1;
-							for (Map.Entry<String, Double> entry : ToNotifyRank.SendClassifica().entrySet()) {
-								String nome = entry.getKey();
-								Double punteggio = entry.getValue();
+							List<Map.Entry<String, Double>> listaDaStampare = ToNotifyRank.SendClassifica();
 
-								System.out.println("(" + classificaNumero + ") " + nome + " : " + punteggio);
-
+							for (Map.Entry<String, Double> entry : listaDaStampare) {
+								System.out.println("(" + classificaNumero + ") " + entry.getKey() + " : " + entry.getValue());
 								classificaNumero++;
 							}
 							System.out.println(
@@ -277,7 +275,7 @@ public class ClientMain {
 							} catch (RemoteException e) {
 								e.printStackTrace();
 							}
-							
+
 							// riceve la risposta dal server
 							String serverResponse = serverReader.readLine();
 							System.out.println(

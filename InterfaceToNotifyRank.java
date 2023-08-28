@@ -12,6 +12,6 @@ public interface InterfaceToNotifyRank extends Remote {
 
 	public void unregisterListener(InterfaceToRankClient listener, String nome) throws RemoteException;
 
-	public ConcurrentHashMap<String, Double> SendClassifica() throws RemoteException;
+	public List<Map.Entry<String, Double>> SendClassifica() throws RemoteException;
 
 }

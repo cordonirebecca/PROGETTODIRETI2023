@@ -23,8 +23,6 @@ public class ClientHandler implements Runnable {
 	String secretWord;
 	static int MCASTPORT;
 	static String MULTICAST;
-	private static final List<Map.Entry<String, Double>> listToCompareClassifica = new ArrayList<Map.Entry<String, Double>>();
-
 
 	public ClientHandler(Socket clientSocket, ConcurrentLinkedQueue<String> utentiOnline,
 						 ConcurrentHashMap<String, Utente> UtenteMap, int MCASTPORT, String MULTICAST) {
@@ -389,8 +387,7 @@ public class ClientHandler implements Runnable {
 		int numeroParoleNonGiocate = 0;
 		int partiteVinte = utente.getPartiteVinte();
 		// numero medio di tentativi:
-		// numero di tutti i tentativi di tutte le partite giocate /numero delle partite
-		// giocate
+		// numero di tutti i tentativi di tutte le partite giocate /numero delle partite giocate
 		int partiteGiocate = utente.getPartiteGiocate();
 
 		// calcolo tutti i tentativi effettuati
@@ -398,15 +395,19 @@ public class ClientHandler implements Runnable {
 			somma += valore;
 		}
 
+		System.out.println("TENTATIVI : " + somma);
 		if (partiteGiocate != 0) {
-			punteggio = partiteVinte * (somma / partiteGiocate);
+			//ho cambiato il calcolo del punteggio:
+			//ho messo il numero totale delle partite vinte * punteggio per la partita vinta che vale 12
+			//l'ho sommato al numero dei tentativi massimi - il numero di tutti i tentativi
+			punteggio = (partiteVinte * 12 ) + (13 - somma);
 
 		} else {
 			// caso in cui non ha mai giocato !
 			return -1;
 		}
 
-		System.out.println("PUNTEGGIO: " + punteggio + "UTENTE: "+ nome);
+		System.out.println("PUNTEGGIO: " + punteggio + " UTENTE: "+ nome);
 		return punteggio;
 
 	}

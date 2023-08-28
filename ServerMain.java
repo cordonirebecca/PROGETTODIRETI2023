@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.*;
+
 
 public class ServerMain {
 
@@ -44,7 +46,7 @@ public class ServerMain {
 	private static ConcurrentHashMap<String, Utente> UtenteMap = new ConcurrentHashMap<String, Utente>();
 
 	// lista con tutti i punteggi della classifica in ordine
-	private static List<Map.Entry<String, Double>> list = new ArrayList<Map.Entry<String, Double>>();
+	public static List<Map.Entry<String, Double>> list = new ArrayList<Map.Entry<String, Double>>();
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// inizio main
 	public static void main(String[] args) {
@@ -110,7 +112,7 @@ public class ServerMain {
 		// apro il vocabolario e prendo a caso una parola che sarà la Secret Word
 		String filePath = "vocabolario.txt";
 
-		// Creiamo e avviamo il thread per generare una nuova secretWord ogni 10 secondi
+		// Creiamo e avviamo il thread per generare una nuova secretWord
 		try {
 			Thread t = new Thread(new GeneratoreDiParole(filePath, TIMEOUT));
 			t.start();
@@ -132,7 +134,7 @@ public class ServerMain {
 
 		// RMI per le callback
 		try {
-			notifier = new ToNotifyRank(tabellaClassifica);
+			notifier = new ToNotifyRank(list);
 			InterfaceToNotifyRank stub = (InterfaceToNotifyRank) UnicastRemoteObject.exportObject(notifier, 0);
 			// Creazione del registro RMI sulla porta 1099
 			Registry registry = LocateRegistry.createRegistry(CALLPORT);
@@ -145,8 +147,6 @@ public class ServerMain {
 			System.err.println("Errore durante l'avvio del server: " + e);
 
 		}
-
-
 
 		// Avvia il thread per la comunicazione multicast
 		Thread multicastThread = new Thread(new ServerMulticast(MCASTPORT, MULTICAST));
@@ -250,7 +250,7 @@ public class ServerMain {
 		// Aggiunta o modifica del punteggio nella tabella
 		if (tabellaClassifica.putIfAbsent(nome, punteggio) != null) {
 			System.out.println(
-					"il tuo punteggio precedente: " + tabellaClassifica.get(nome) + "\nil tuo nuovo punteggio:" + punteggio);
+					nome + " :il tuo punteggio precedente: " + tabellaClassifica.get(nome) + "\nil tuo nuovo punteggio:" + punteggio);
 			tabellaClassifica.replace(nome, tabellaClassifica.get(nome), punteggio);
 		}
 
@@ -266,9 +266,10 @@ public class ServerMain {
 			primiTreNomiAttuali.add(list.get(i).getKey());
 		}
 
-		// Ordina la lista in base ai punteggi
-		list.sort(Map.Entry.comparingByValue());
-
+		// Ordina la lista in base ai punteggi in modo decrescente
+		//chi ha il punteggio più alto sta vincendo quindi sarà più alto
+		//in classifica
+		list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
 		// Estrai i primi tre nomi dalla lista ordinata
 		List<String> primiTreNomiNuovi = new ArrayList<>();

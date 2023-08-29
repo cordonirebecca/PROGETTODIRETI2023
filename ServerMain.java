@@ -282,7 +282,12 @@ public class ServerMain {
 			// Invia notifica che i primi tre nomi sono cambiati
 			System.out.println("I primi tre nomi sono cambiati!");
 			// invio messaggio rmi
-			notifier.notifyRankUpdate(nome, list);
+			try{
+				notifier.notifyRankUpdate(list);
+			}catch (RemoteException e) {
+				System.out.println("Errore callaback");
+			}
+
 		}
 
 	}
@@ -290,15 +295,19 @@ public class ServerMain {
 
 	// metodo per salvare le parole in JSON
 	private static void salvataggioParoleDatabase() {
+		//creo oggeto gson
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("Parole_database.json"))) {
+			//definisco il tipo di dati che verrà serializzato in JSON
 			Type pGiocateType = new TypeToken<Vector<String>>() {
 			}.getType();
 			String p = gson.toJson(paroleDatabase, pGiocateType);
 
 			if (p != null) {
 				writer.write(p);
+				//La flush garantisce che i dati siano scritti nel file in quel momento,
+				// in modo da evitare problemi di sincronizzazione tra il buffer in memoria e il file su disco.
 				writer.flush();
 
 				System.out.println("Salvataggio su Parole_database.json effettuato");
@@ -308,6 +317,7 @@ public class ServerMain {
 
 		} catch (FileNotFoundException f) {
 
+			//se il file non esiste lo creo
 			try {
 				File fi = new File("Parole_database.json");
 				if (fi.createNewFile()) {
@@ -330,12 +340,15 @@ public class ServerMain {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("Utenti_online.json"))) {
+			//definisco il tipo di dati che verrà serializzato in JSON
 			Type pGiocateType = new TypeToken<ConcurrentLinkedQueue<String>>() {
 			}.getType();
 			String p = gson.toJson(utentiOnline, pGiocateType);
 
 			if (p != null) {
 				writer.write(p);
+				//La flush garantisce che i dati siano scritti nel file in quel momento,
+				// in modo da evitare problemi di sincronizzazione tra il buffer in memoria e il file su disco.
 				writer.flush();
 
 				System.out.println("Salvataggio su Utenti_online.json effettuato");
@@ -345,6 +358,7 @@ public class ServerMain {
 
 		} catch (FileNotFoundException f) {
 
+			//se il file non esiste lo creo
 			try {
 				File fi = new File("Utenti_online.json");
 				if (fi.createNewFile()) {
@@ -367,12 +381,15 @@ public class ServerMain {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("Tabella_classifica.json"))) {
+			//definisco il tipo di dati che verrà serializzato in JSON
 			Type pGiocateType = new TypeToken<ConcurrentHashMap<String, Double>>() {
 			}.getType();
 			String p = gson.toJson(tabellaClassifica, pGiocateType);
 
 			if (p != null) {
 				writer.write(p);
+				//La flush garantisce che i dati siano scritti nel file in quel momento,
+				// in modo da evitare problemi di sincronizzazione tra il buffer in memoria e il file su disco.
 				writer.flush();
 
 				System.out.println("Salvataggio su Tabella_classifica effettuato");
@@ -382,6 +399,7 @@ public class ServerMain {
 
 		} catch (FileNotFoundException f) {
 
+			//se il file non esiste lo creo
 			try {
 				File fi = new File("Tabella_classifica.json");
 				if (fi.createNewFile()) {
@@ -404,12 +422,15 @@ public class ServerMain {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 		try (BufferedWriter writer = new BufferedWriter(new PrintWriter("Utente_map.json"))) {
+			//definisco il tipo di dati che verrà serializzato in JSON
 			Type pGiocateType = new TypeToken<ConcurrentHashMap<String, Utente>>() {
 			}.getType();
 			String p = gson.toJson(UtenteMap, pGiocateType);
 
 			if (p != null) {
 				writer.write(p);
+				//La flush garantisce che i dati siano scritti nel file in quel momento,
+				// in modo da evitare problemi di sincronizzazione tra il buffer in memoria e il file su disco.
 				writer.flush();
 
 				System.out.println("Salvataggio su Utente_map effettuato");
@@ -419,6 +440,7 @@ public class ServerMain {
 
 		} catch (FileNotFoundException f) {
 
+			//se il file non esiste lo creo
 			try {
 				File fi = new File("Utente_map.json");
 				if (fi.createNewFile()) {
@@ -436,14 +458,19 @@ public class ServerMain {
 		}
 	}
 
+
+
+	//ripristino la struttura dati patoledatabase
 	private static void riattivazioneParoleDatabase() {
 		Gson gson = new Gson();
 
+		//leggo file json
 		try (BufferedReader reader = new BufferedReader((new FileReader("Parole_database.json")))) {
 			Type vincitoriType = new TypeToken<Vector<String>>() {
 			}.getType();
 			Vector<String> v = gson.fromJson(reader, vincitoriType);
 
+			//se v non è nulla allora inserisco
 			if (v != null) {
 
 				paroleDatabase.addAll(v);
@@ -455,6 +482,7 @@ public class ServerMain {
 
 		} catch (FileNotFoundException f) {
 
+			//se il file non esiste lo creo
 			try {
 				File fi = new File("Parole_database.json");
 				if (fi.createNewFile()) {
@@ -473,14 +501,17 @@ public class ServerMain {
 		}
 	}
 
+	//ripristino la struttura dati UtentiOnline
 	private static void riattivazioneUtentiOnline() {
 		Gson gson = new Gson();
 
+		//leggo file json
 		try (BufferedReader reader = new BufferedReader((new FileReader("Utenti_online.json")))) {
 			Type vincitoriType = new TypeToken<ConcurrentLinkedQueue<String>>() {
 			}.getType();
 			ConcurrentLinkedQueue<String> v = gson.fromJson(reader, vincitoriType);
 
+			//se v non è nulla allora inserisco
 			if (v != null) {
 				utentiOnline.addAll(v);
 				System.out.println("Riattivazione Utenti_online.json eseguita corretamente");
@@ -491,6 +522,7 @@ public class ServerMain {
 
 		} catch (FileNotFoundException f) {
 
+			//se il file non esiste lo creo
 			try {
 				File fi = new File("Utenti_online.json");
 				if (fi.createNewFile()) {
@@ -509,14 +541,17 @@ public class ServerMain {
 		}
 	}
 
+	//ripristino la tabellaClassifica
 	private static void riattivazioneTabellaClassifica() {
 		Gson gson = new Gson();
 
+		//leggo file json
 		try (BufferedReader reader = new BufferedReader((new FileReader("Tabella_classifica.json")))) {
 			Type vincitoriType = new TypeToken<ConcurrentHashMap<String, Double>>() {
 			}.getType();
 			ConcurrentHashMap<String, Double> v = gson.fromJson(reader, vincitoriType);
 
+			//se v non è  nulla allora inserisco
 			if (v != null) {
 				tabellaClassifica.putAll(v);
 				System.out.println("Riattivazione Tabella_classifica.json eseguita corretamente");
@@ -526,7 +561,7 @@ public class ServerMain {
 			}
 
 		} catch (FileNotFoundException f) {
-
+			//se il file non esiste lo creo
 			try {
 				File fi = new File("Tabella_classifica.json");
 				if (fi.createNewFile()) {
@@ -545,14 +580,17 @@ public class ServerMain {
 		}
 	}
 
+	//ripristino la utenteMap
 	private static void riattivazioneUtenteMap() {
 		Gson gson = new Gson();
 
+		//leggo il file json
 		try (BufferedReader reader = new BufferedReader((new FileReader("Utente_map.json")))) {
 			Type vincitoriType = new TypeToken<ConcurrentHashMap<String, Utente>>() {
 			}.getType();
 			ConcurrentHashMap<String, Utente> v = gson.fromJson(reader, vincitoriType);
 
+			//se v non è nulla allora inserisco i valori
 			if (v != null) {
 				UtenteMap.putAll(v);
 				System.out.println("Riattivazione Utente_map.json eseguita corretamente");
@@ -562,7 +600,7 @@ public class ServerMain {
 			}
 
 		} catch (FileNotFoundException f) {
-
+			//se il file non esiste lo creo
 			try {
 				File fi = new File("Utente_map.json");
 				if (fi.createNewFile()) {
@@ -580,6 +618,7 @@ public class ServerMain {
 			e.printStackTrace();
 		}
 	}
+
 
 
 }

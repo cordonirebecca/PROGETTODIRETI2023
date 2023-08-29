@@ -113,7 +113,7 @@ public class ClientMain {
 			while ((message = reader.readLine()) != null) {
 				// Divido il messaggio in due parti: OPERAZIONE, DATI
 				String[] messaggioDiviso = message.split(":");
-				String operazione = messaggioDiviso[0]; // operazione
+				String operazione = messaggioDiviso[0].trim(); // operazione
 
 				if (messaggioDiviso.length == 1) { // Caso in cui invii solo il comando
 					switch (operazione) {
@@ -174,12 +174,15 @@ public class ClientMain {
 						}
 					}
 				} else if (messaggioDiviso.length == 2) { // Caso in cui invii comando e dati
-					dati = messaggioDiviso[1]; // dati
+					//se mi arriva un input del tipo REGISTRAZIONE: rebi/89
+					//il replaceALL toglie lo spazio tra : e "rebi/89"
+					//senza che il giocatore abbia problemi se poi lo scrivesse senza spazio
+					dati = messaggioDiviso[1].replaceAll(" ", "");
 
 					switch (operazione) {
 						case ("REGISTRAZIONE") -> {
 							// isolo il nome e la psw
-							String[] messaggioDiviso2 = messaggioDiviso[1].split("/");
+							String[] messaggioDiviso2 = dati.split("/");
 							String nome = messaggioDiviso2[0]; // nome
 
 							// controllo che i dati vengano inseriti correttamente
@@ -192,12 +195,16 @@ public class ClientMain {
 											.lookup("InterfaceToRegister");
 
 									// Chiamata al metodo remoto per registrare un utente
-									boolean registrationResult = interfacetoregister.registrazioneUtente(nome, psw);
+									Integer registrationResult = interfacetoregister.registrazioneUtente(nome, psw);
 
-									if (registrationResult == false) { // già registrato
+									//Utente già registrato, password corretta
+									if (registrationResult == -1 ) { // già registrato password corretta
 										writer.println("REGISTRAZIONE:" + "stop");
 										writer.flush();
-									} else { // da registrare
+									}else if(registrationResult == -2 ){ // già registrato password sbagliata
+										writer.println("REGISTRAZIONE:" + "stop2");
+										writer.flush();
+									}else { // da registrare
 										writer.println("REGISTRAZIONE:" + dati);
 										writer.flush();
 									}
@@ -220,40 +227,50 @@ public class ClientMain {
 
 						case ("LOGIN") -> {
 							// isolo il nome e la psw
-							String[] messaggioDiviso2 = messaggioDiviso[1].split("/");
+							String[] messaggioDiviso2 = dati.split("/");
 							String nome = messaggioDiviso2[0]; // nome
 
 							if (messaggioDiviso2.length == 2) {
 								String psw = messaggioDiviso2[1]; // psw
 
-								writer.println("LOGIN:" + nome);
+								//invio nome e password con spazio nel mezzo
+								writer.println("LOGIN:" + nome + " " + psw);
 								writer.flush();
 								nomeUtente = nome;
 
-								// riceve la risposta dal server : frase/MULTICASTaddress
+								// riceve la risposta dal server
 								String serverResponse = serverReader.readLine();
 
-								//separo la frase dall'indirizzo
-								String[] parts = serverResponse.split("/");
-								String afterSlash = parts[1];
-								MULTICAST = afterSlash; //assegno l'indirizzo alla variabile
+								//caso in cui psw sia sbagliata
+								if(serverResponse.equals("password errata, ritenta 'LOGIN:<nome>/<password>'")){
+									System.out.println(
+											"-----------------------------------------------------------------------------------------");
+									System.out.println("Server response: " + serverResponse);
+								} else {
+									//caso psw giusta
 
-								// Avvia il thread per la comunicazione multicast
-								multicastThread = new Thread(
-										new ClientMulticast(MCASTPORT, MULTICAST, datiRicevutiMulticast));
-								multicastThread.start();
+									//separo la frase dall'indirizzo
+									String[] parts = serverResponse.split("/");
+									String afterSlash = parts[1];
+									MULTICAST = afterSlash; //assegno l'indirizzo alla variabile
 
-								try {
-									// registro l'utente alle callback
-									ToNotifyRank.registerListener(stub, nome);
+									// Avvia il thread per la comunicazione multicast
+									multicastThread = new Thread(
+											new ClientMulticast(MCASTPORT, MULTICAST, datiRicevutiMulticast));
+									multicastThread.start();
 
-								} catch (RemoteException e) {
-									e.printStackTrace();
+									try {
+										// registro l'utente alle callback
+										ToNotifyRank.registerListener(stub, nome);
+
+									} catch (RemoteException e) {
+										e.printStackTrace();
+									}
+
+									System.out.println(
+											"-----------------------------------------------------------------------------------------");
+									System.out.println("Server response: " + parts[0]); // è la risposta pulita senza multicastADDRESS
 								}
-
-								System.out.println(
-										"-----------------------------------------------------------------------------------------");
-								System.out.println("Server response: " + parts[0]); // è la risposta pulita senza multicastADDRESS
 
 							} else {
 								System.out.println(
@@ -305,11 +322,9 @@ public class ClientMain {
 								numeroVolteMax = 0;
 							}
 							if (numeroVolteMax == 12) {
-								System.out.println(
-										"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-								System.out.println("Hai l'ultima chance");
-								System.out.println(
-										"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+								System.out.println();
+								System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!! Hai l'ultima chance !!!!!!!!!!!!!!!!!!!!!!!!!");
+								System.out.println();
 							}
 							// Invia il comando di condivisione al server
 							writer.println("sendWORD:" + dati + "/" + nomeUtente + "," + numeroVolteMax);

@@ -25,20 +25,28 @@ public class ToRegister extends RemoteServer implements InterfaceToRegister {
 	}
 
 	@Override
-	public boolean registrazioneUtente(String username, String password) throws RemoteException {
-		// Implementa la logica per la registrazione dell'utente qui
-		// salva il nome utente e la password in un database UTENTEMAP
-		if (UtenteMap.get(username) == null) {
+	public Integer registrazioneUtente(String username, String password) throws RemoteException {
+		// Controlla se l'utente esiste già nel UTENTEMAP e se la password corrisponde
+		if (UtenteMap.containsKey(username)) {
+			Utente existingUser = UtenteMap.get(username);
+
+			// Controlla se la password corrisponde
+			if (existingUser.getPassword().equals(password)) {
+				return -1; // Utente già registrato, password corretta
+			} else {
+				return -2; // Utente già registrato, password errata
+			}
+		} else {
+			// Utente non registrato, procedi con la registrazione
 			ConcurrentLinkedQueue<String> paroleGiocate = new ConcurrentLinkedQueue<>();
 			ConcurrentLinkedQueue<String> paroleNonGiocate = new ConcurrentLinkedQueue<>();
 			ConcurrentHashMap<String, Integer> MapTentativiUtente = new ConcurrentHashMap<String, Integer>();
 			UtenteMap.putIfAbsent(username, new Utente(username, password, paroleGiocate, paroleIndovinate,
-					partiteVinte, partiteGiocate, tentativoUtente, wordGuessed,MapTentativiUtente,paroleNonGiocate,tentativiPartiteVinte));
-			
+					partiteVinte, partiteGiocate, tentativoUtente, wordGuessed, MapTentativiUtente, paroleNonGiocate, tentativiPartiteVinte));
+
 			ServerMain.salvataggioUtenteMap();
-			return true; // registrazione andata a buon fine
-		} else {
-			return false; // registrazione fallita
+			return 0; // Registrazione andata a buon fine
 		}
 	}
+
 }

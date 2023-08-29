@@ -1,13 +1,8 @@
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.*;
-import java.util.concurrent.*;
 
 public class ToNotifyRank extends RemoteObject implements InterfaceToNotifyRank {
 	
@@ -24,32 +19,31 @@ public class ToNotifyRank extends RemoteObject implements InterfaceToNotifyRank 
 
     
     //metodo per aggiungere gli utenti alla lista degli utenti per le callback
-    public void registerListener(InterfaceToRankClient listener, String nome) {
-        if (!listeners.contains(listener)) {
-            listeners.put(nome, listener);
-            System.out.println("Iscrizione alle callback effettuata con successo: "+ nome );
-        }
-
+    public void registerListener(InterfaceToRankClient listener, String nome) throws RemoteException{
+        listeners.put(nome, listener);
+        System.out.println("Iscrizione alle callback effettuata con successo: "+ nome );
     }
 
     //cancellazione per callback
-    public void unregisterListener(InterfaceToRankClient listener, String nome) {
+    public void unregisterListener(InterfaceToRankClient listener, String nome) throws RemoteException{
         listeners.remove(nome,listener);
         System.out.println("Cancellazione alle callback effettuata con successo: " + nome );
     }
 
     
     //metodo per avvisare sulla modifica della classifica
-    public void notifyRankUpdate( String nome, List<Map.Entry<String, Double>> list) {
+    public void notifyRankUpdate(List<Map.Entry<String, Double>> list) throws RemoteException{
 
-    	if(listeners.get(nome) != null) {
-            try{
-                System.out.println("avviso i seguenti utenti che è cambiata la classifica: " + listeners.get(nome));
-                InterfaceToRankClient client = listeners.get(nome);
-                client.rankUpdated(list);
-            }catch (NullPointerException e){
+        //invio a tutti la notifica della classifica cambiata
+        for (Map.Entry<String, InterfaceToRankClient> entry : listeners.entrySet()) {
+            try {
+                InterfaceToRankClient client = entry.getValue();
+                if (client != null) {
+                    client.rankUpdated(list);
+                }
             } catch (RemoteException e) {
-               e.printStackTrace();
+                // Gestione delle eccezioni in caso di errore remoto
+                e.printStackTrace();
             }
         }
     }

@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface InterfaceToNotifyRank extends Remote {
 
-	void notifyRankUpdate(String nome, List<Map.Entry<String, Double>> list) throws RemoteException;
+	void notifyRankUpdate(List<Map.Entry<String, Double>> list) throws RemoteException;
 
 	public void registerListener(InterfaceToRankClient listener, String nome) throws RemoteException;
 

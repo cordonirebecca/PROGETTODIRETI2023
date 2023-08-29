@@ -48,7 +48,7 @@ public class ClientHandler implements Runnable {
 				System.out.println("Received message from client: " + clientMessage);
 
 				// Process client message
-				String response = "Server response: " + clientMessage.toUpperCase();
+				String response = "Server response: " + clientMessage;
 
 				if (clientMessage.contains("REGISTRAZIONE")) {
 					int startIndex = clientMessage.indexOf(":") + 1; // Calcola l'indice di inizio della parte
@@ -56,9 +56,11 @@ public class ClientHandler implements Runnable {
 
 					String desiredPart = clientMessage.substring(startIndex);
 
-					if (desiredPart.equals("stop")) {
+					if (desiredPart.equals("stop")) { //già registrato e psw corretta
 						response = "utente già registrato,digita 'LOGIN:<nome>/<password>'";
-					} else {
+					} else if (desiredPart.equals("stop2")) { //già registrato ma psw sbagliata
+						response = "password errata perfavore ritenta 'REGISTRAZIONE:<nome>/<password>'";
+					} else{
 						response = "utente registrato con successo,digita 'LOGIN:<nome>/<password>'";
 					}
 				}
@@ -70,19 +72,32 @@ public class ClientHandler implements Runnable {
 
 					String desiredPart = clientMessage.substring(startIndex);
 
+					//divido nome e psw
+					String[] nomePswArray = desiredPart.split(" ");
+					String nome = nomePswArray[0]; // nome
+					String psw = nomePswArray[1];  // psw
 
 					// Se l'utente non è registrato non può fare login
-					if (UtenteMap.containsKey(desiredPart)) { // qui fa il login felice
-						response = "utente registrato, abilitato al login" + "/" + MULTICAST;
+					if (UtenteMap.containsKey(nome)) { // controllo se l'utente è nella hashmap
+						utente = UtenteMap.get(nome);
 
-						// controllo che non ci sia un altro utente già online con stesso nome
-						if (utentiOnline.contains(desiredPart)) {
-							response = "utente già collegato! Iniziamo a giocare! digita 'playWORDLE:<nome>'" + "/" + MULTICAST;
+						// Controllo se la password sia giusta
+						if (utente.getPassword().equals(psw)) {
+							//caso in cui è ok
+							response = "utente registrato, abilitato al login" + "/" + MULTICAST;
 
-						} else {
-							utentiOnline.add(desiredPart);
-							ServerMain.salvataggioUtentiOnline();
-							response = "utente collegato con successo! Iniziamo a giocare! digita 'playWORDLE:<nome>'" + "/" + MULTICAST;
+							// controllo che non ci sia un altro utente già online con stesso nome
+							if (utentiOnline.contains(nome)) {
+								response = "utente già collegato! Iniziamo a giocare! digita 'playWORDLE:<nome>'" + "/" + MULTICAST;
+
+							} else {
+								utentiOnline.add(nome);
+								ServerMain.salvataggioUtentiOnline();
+								response = "utente collegato con successo! Iniziamo a giocare! digita 'playWORDLE:<nome>'" + "/" + MULTICAST;
+							}
+						}
+						else{ //psw sbagliata
+							response = "password errata, ritenta 'LOGIN:<nome>/<password>'" ;
 						}
 					} else { // deve fare la registrazione
 						response = "utente non registrato, perfavore effettua REGISTRAZIONE:<nome>/<password>";
@@ -228,7 +243,8 @@ public class ClientHandler implements Runnable {
 
 					} else {
 						// caso in cui non ha inserito 10 caratteri, perde un tentativo !
-						response = " hai inserito un numero di caratteri errato, per favore ritenta! devono essere 10! ";
+						response = " hai inserito un numero di caratteri errato, per favore ritenta! devono essere 10! Tentantivo # " +
+								+ tentativo;
 					}
 
 				}
@@ -309,7 +325,7 @@ public class ClientHandler implements Runnable {
 
 				}
 
-				// Send response to client
+				// invio risposta al client
 				writer.println(response);
 				writer.flush();
 			}
@@ -324,6 +340,7 @@ public class ClientHandler implements Runnable {
 		}
 	}
 
+	//funzione per ritornare le parole inviate con i simboli corrispondenti
 	private String compareWords(String secretWord, String guessWord) {
 		StringBuilder response = new StringBuilder();
 
@@ -378,6 +395,7 @@ public class ClientHandler implements Runnable {
 		return vittorieConsecutiveCorrenti;
 	}
 
+	//funzione che calcola il punteggio dell'utente
 	public double CalcoloPunteggio(String nome) {
 		// numero partite vinte * numero medio di tentativi impiegati per raggiungere la
 		// soluzione
@@ -395,7 +413,6 @@ public class ClientHandler implements Runnable {
 			somma += valore;
 		}
 
-		System.out.println("TENTATIVI : " + somma);
 		if (partiteGiocate != 0) {
 			//ho cambiato il calcolo del punteggio:
 			//ho messo il numero totale delle partite vinte * punteggio per la partita vinta che vale 12
@@ -417,7 +434,7 @@ public class ClientHandler implements Runnable {
 		try (DatagramSocket datagramSocket = new DatagramSocket()) {
 			InetAddress group = InetAddress.getByName(MULTICAST);
 
-			// Unisco i due valori con un delimitatore
+			// Unisco i due valori con un delimitatore: punteggio e nome
 			String data = value + ":" + str;
 
 			// Converte la stringa in array di byte e crea il pacchetto

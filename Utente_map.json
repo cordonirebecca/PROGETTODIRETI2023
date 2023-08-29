@@ -15,29 +15,6 @@
     "MapTentativiUtente": {},
     "tentativiPartiteVinte": []
   },
-  "lore": {
-    "username": "lore",
-    "psw": "89",
-    "paroleGiocate": [
-      "uncottoned"
-    ],
-    "paroleIndovinate": [
-      "regraduate",
-      "uncottoned",
-      "uncottoned"
-    ],
-    "paroleNonGiocate": [],
-    "partiteGiocate": 1,
-    "partiteVinte": 1,
-    "tentativoUtente": 0,
-    "wordGuessed": true,
-    "MapTentativiUtente": {
-      "uncottoned": 7
-    },
-    "tentativiPartiteVinte": [
-      7
-    ]
-  },
   "palla": {
     "username": "palla",
     "psw": "8",
@@ -54,94 +31,6 @@
     "wordGuessed": true,
     "MapTentativiUtente": {
       "spirochete": 13
-    },
-    "tentativiPartiteVinte": []
-  },
-  "rosso": {
-    "username": "rosso",
-    "psw": "7",
-    "paroleGiocate": [
-      "tramontane"
-    ],
-    "paroleIndovinate": [
-      "backhander"
-    ],
-    "paroleNonGiocate": [],
-    "partiteGiocate": 1,
-    "partiteVinte": 0,
-    "tentativoUtente": 0,
-    "wordGuessed": true,
-    "MapTentativiUtente": {
-      "tramontane": 13
-    },
-    "tentativiPartiteVinte": []
-  },
-  "lori": {
-    "username": "lori",
-    "psw": "7",
-    "paroleGiocate": [
-      "carbonless",
-      "absolutive"
-    ],
-    "paroleIndovinate": [
-      "carbonless",
-      "absolutive"
-    ],
-    "paroleNonGiocate": [],
-    "partiteGiocate": 2,
-    "partiteVinte": 2,
-    "tentativoUtente": 0,
-    "wordGuessed": true,
-    "MapTentativiUtente": {
-      "absolutive": 1,
-      "carbonless": 1
-    },
-    "tentativiPartiteVinte": [
-      1,
-      1
-    ]
-  },
-  "camero": {
-    "username": "camero",
-    "psw": "7",
-    "paroleGiocate": [
-      "carbonless",
-      "extogenous"
-    ],
-    "paroleIndovinate": [
-      "carbonless",
-      "extogenous"
-    ],
-    "paroleNonGiocate": [],
-    "partiteGiocate": 2,
-    "partiteVinte": 2,
-    "tentativoUtente": 0,
-    "wordGuessed": true,
-    "MapTentativiUtente": {
-      "extogenous": 1,
-      "carbonless": 1
-    },
-    "tentativiPartiteVinte": [
-      1,
-      1
-    ]
-  },
-  "verde": {
-    "username": "verde",
-    "psw": "7",
-    "paroleGiocate": [
-      "telegnosis"
-    ],
-    "paroleIndovinate": [
-      "telegnosis"
-    ],
-    "paroleNonGiocate": [],
-    "partiteGiocate": 1,
-    "partiteVinte": 0,
-    "tentativoUtente": 0,
-    "wordGuessed": true,
-    "MapTentativiUtente": {
-      "telegnosis": 13
     },
     "tentativiPartiteVinte": []
   },
@@ -219,6 +108,346 @@
     "MapTentativiUtente": {},
     "tentativiPartiteVinte": []
   },
+  "simone": {
+    "username": "simone",
+    "psw": "89",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "sushi": {
+    "username": "sushi",
+    "psw": "0",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "REBI": {
+    "username": "REBI",
+    "psw": "7",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  " rebu": {
+    "username": " rebu",
+    "psw": "89",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  " rebi": {
+    "username": " rebi",
+    "psw": "89",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "asso": {
+    "username": "asso",
+    "psw": "0",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "arancione": {
+    "username": "arancione",
+    "psw": "7",
+    "paroleGiocate": [
+      "telegnosis"
+    ],
+    "paroleIndovinate": [
+      "telegnosis"
+    ],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 1,
+    "partiteVinte": 1,
+    "tentativoUtente": 0,
+    "wordGuessed": true,
+    "MapTentativiUtente": {
+      "telegnosis": 1
+    },
+    "tentativiPartiteVinte": [
+      1
+    ]
+  },
+  "dino": {
+    "username": "dino",
+    "psw": "8",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "arcobaleno": {
+    "username": "arcobaleno",
+    "psw": "89",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "ares": {
+    "username": "ares",
+    "psw": "7",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  " REBI": {
+    "username": " REBI",
+    "psw": "7",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "ciao": {
+    "username": "ciao",
+    "psw": "0",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "cane": {
+    "username": "cane",
+    "psw": "89",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "lore": {
+    "username": "lore",
+    "psw": "89",
+    "paroleGiocate": [
+      "uncottoned"
+    ],
+    "paroleIndovinate": [
+      "regraduate",
+      "uncottoned",
+      "uncottoned"
+    ],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 1,
+    "partiteVinte": 1,
+    "tentativoUtente": 0,
+    "wordGuessed": true,
+    "MapTentativiUtente": {
+      "uncottoned": 7
+    },
+    "tentativiPartiteVinte": [
+      7
+    ]
+  },
+  " ciao": {
+    "username": " ciao",
+    "psw": "45",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "rosso": {
+    "username": "rosso",
+    "psw": "7",
+    "paroleGiocate": [
+      "tramontane"
+    ],
+    "paroleIndovinate": [
+      "backhander"
+    ],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 1,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": true,
+    "MapTentativiUtente": {
+      "tramontane": 13
+    },
+    "tentativiPartiteVinte": []
+  },
+  "lori": {
+    "username": "lori",
+    "psw": "7",
+    "paroleGiocate": [
+      "carbonless",
+      "absolutive"
+    ],
+    "paroleIndovinate": [
+      "carbonless",
+      "absolutive"
+    ],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 2,
+    "partiteVinte": 2,
+    "tentativoUtente": 0,
+    "wordGuessed": true,
+    "MapTentativiUtente": {
+      "absolutive": 1,
+      "carbonless": 1
+    },
+    "tentativiPartiteVinte": [
+      1,
+      1
+    ]
+  },
+  "monte": {
+    "username": "monte",
+    "psw": "890",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "camero": {
+    "username": "camero",
+    "psw": "7",
+    "paroleGiocate": [
+      "carbonless",
+      "extogenous"
+    ],
+    "paroleIndovinate": [
+      "carbonless",
+      "extogenous"
+    ],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 2,
+    "partiteVinte": 2,
+    "tentativoUtente": 0,
+    "wordGuessed": true,
+    "MapTentativiUtente": {
+      "extogenous": 1,
+      "carbonless": 1
+    },
+    "tentativiPartiteVinte": [
+      1,
+      1
+    ]
+  },
+  "verde": {
+    "username": "verde",
+    "psw": "7",
+    "paroleGiocate": [
+      "telegnosis"
+    ],
+    "paroleIndovinate": [
+      "telegnosis"
+    ],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 1,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": true,
+    "MapTentativiUtente": {
+      "telegnosis": 13
+    },
+    "tentativiPartiteVinte": []
+  },
+  "luna": {
+    "username": "luna",
+    "psw": "8",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  "LOREDANA": {
+    "username": "LOREDANA",
+    "psw": "7",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
   " minnie": {
     "username": " minnie",
     "psw": "54",
@@ -253,6 +482,19 @@
     "MapTentativiUtente": {
       "braggishly": 13
     },
+    "tentativiPartiteVinte": []
+  },
+  " lore": {
+    "username": " lore",
+    "psw": "890",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
     "tentativiPartiteVinte": []
   },
   "nuvola": {
@@ -295,27 +537,6 @@
       1
     ]
   },
-  "arancione": {
-    "username": "arancione",
-    "psw": "7",
-    "paroleGiocate": [
-      "telegnosis"
-    ],
-    "paroleIndovinate": [
-      "telegnosis"
-    ],
-    "paroleNonGiocate": [],
-    "partiteGiocate": 1,
-    "partiteVinte": 1,
-    "tentativoUtente": 0,
-    "wordGuessed": true,
-    "MapTentativiUtente": {
-      "telegnosis": 1
-    },
-    "tentativiPartiteVinte": [
-      1
-    ]
-  },
   "pluto": {
     "username": "pluto",
     "psw": "8",
@@ -333,6 +554,19 @@
     "MapTentativiUtente": {},
     "tentativiPartiteVinte": []
   },
+  " cavolfiore": {
+    "username": " cavolfiore",
+    "psw": "80",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
   "blu": {
     "username": "blu",
     "psw": "7",
@@ -340,6 +574,19 @@
     "paroleIndovinate": [
       "backhander"
     ],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
+  " lori": {
+    "username": " lori",
+    "psw": "76543",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
     "paroleNonGiocate": [],
     "partiteGiocate": 0,
     "partiteVinte": 0,
@@ -384,9 +631,9 @@
     "MapTentativiUtente": {},
     "tentativiPartiteVinte": []
   },
-  "ares": {
-    "username": "ares",
-    "psw": "7",
+  "sale": {
+    "username": "sale",
+    "psw": "8",
     "paroleGiocate": [],
     "paroleIndovinate": [],
     "paroleNonGiocate": [],
@@ -417,5 +664,18 @@
     "tentativiPartiteVinte": [
       3
     ]
+  },
+  "loredana": {
+    "username": "loredana",
+    "psw": "7",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
   }
 }

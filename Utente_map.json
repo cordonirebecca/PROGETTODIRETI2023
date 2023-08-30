@@ -644,6 +644,19 @@
     "MapTentativiUtente": {},
     "tentativiPartiteVinte": []
   },
+  "paperina": {
+    "username": "paperina",
+    "psw": "9",
+    "paroleGiocate": [],
+    "paroleIndovinate": [],
+    "paroleNonGiocate": [],
+    "partiteGiocate": 0,
+    "partiteVinte": 0,
+    "tentativoUtente": 0,
+    "wordGuessed": false,
+    "MapTentativiUtente": {},
+    "tentativiPartiteVinte": []
+  },
   "paperino": {
     "username": "paperino",
     "psw": "89",

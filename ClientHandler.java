@@ -1,10 +1,7 @@
 import static java.lang.Thread.sleep;
 
 import java.io.*;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -329,7 +326,16 @@ public class ClientHandler implements Runnable {
 				writer.println(response);
 				writer.flush();
 			}
-		} catch (IOException e) {
+		} catch (SocketException e) {
+			// Connessione resettata, mando messaggio
+			System.out.println("il CLient ha chiuso la connessione " );
+			// Chiudi le risorse e termina il thread
+			try {
+				clientSocket.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {

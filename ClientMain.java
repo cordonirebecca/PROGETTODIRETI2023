@@ -246,7 +246,11 @@ public class ClientMain {
 									System.out.println(
 											"-----------------------------------------------------------------------------------------");
 									System.out.println("Server response: " + serverResponse);
-								} else {
+								} else if (serverResponse.equals("utente non registrato, perfavore effettua REGISTRAZIONE:<nome>/<password>")){
+									System.out.println(
+											"-----------------------------------------------------------------------------------------");
+									System.out.println("Server response: " + serverResponse);
+								}else {
 									//caso psw giusta
 
 									//separo la frase dall'indirizzo
